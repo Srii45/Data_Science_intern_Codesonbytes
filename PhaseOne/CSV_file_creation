@@ -1,0 +1,35 @@
+import requests
+import csv
+import pandas as pd
+
+url = "https://api.coindcx.com/exchange/v1/markets_details"
+
+headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+}
+
+response = requests.get(url, headers=headers)
+myjson = response.json()
+
+mydata = []
+csvheader=['Coindcx_name','Base_currency_short_name','Target_currency_short_name','Target_currency_name',
+           'Base_currency_name','Min_quantity','Max_quantity','Min_price','Max_price','Min_notional',
+           'Base_currency_precision','Target_currency_precision','Step','order_types','Symbol','Ecode',
+           'Max_leverage','Max_leverage_short','Pair','Status']
+
+for x in myjson:
+    listing = [x['coindcx_name'], x['base_currency_short_name'], x['target_currency_short_name'], x['target_currency_name'],
+               x['base_currency_name'], x['min_quantity'], x['max_quantity'], x['min_price'], x['max_price'],
+               x['min_notional'], x['base_currency_precision'], x['target_currency_precision'], x['step'],
+               x['order_types'], x['symbol'], x['ecode'], x['max_leverage'], x['max_leverage_short'], x['pair'],
+               x['status']]
+    mydata.append(listing)
+
+with open('CoinDCX.csv','w',encoding='UTF8',newline='') as f:
+    writer=csv.writer(f)
+
+    writer.writerow(csvheader)
+    writer.writerows(mydata)
+
+print("done")
